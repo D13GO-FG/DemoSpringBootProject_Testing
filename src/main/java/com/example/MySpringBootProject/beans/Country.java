@@ -1,9 +1,22 @@
 package com.example.MySpringBootProject.beans;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "Country")
 public class Country {
+    @Id
+    @Column(name = "id")
     int id;
+    @Column(name = "country_name")
     String countryName;
+    @Column(name = "capital")
     String countryCapital;
+
+    public Country(){}
 
     public Country(int id, String countryName, String countryCapital) {
         this.id = id;
