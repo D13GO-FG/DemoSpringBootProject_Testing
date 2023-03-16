@@ -2,41 +2,32 @@ package com.example.MySpringBootProject.services;
 
 import com.example.MySpringBootProject.beans.Country;
 import com.example.MySpringBootProject.controllers.AddResponse;
+import com.example.MySpringBootProject.repositories.CountryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Component
+@Service
 public class CountryService {
-    static HashMap<Integer, Country> countryIdMap;
-
-    public CountryService(){
-        countryIdMap = new HashMap<Integer, Country>();
-        Country mexicoCountry = new Country(1, "Mexico", "Mexico City");
-        Country usaCountry = new Country(2, "USA", "Washington");
-        Country ukCountry = new Country(3, "UK", "London");
-
-        countryIdMap.put(1, mexicoCountry);
-        countryIdMap.put(2, usaCountry);
-        countryIdMap.put(3, ukCountry);
-    }
-
-    public List getAllCountries(){
-        List countries = new ArrayList(countryIdMap.values());
-        return countries;
+    @Autowired
+    CountryRepository countryRepository;
+    public List<Country> getAllCountries(){
+        return countryRepository.findAll();
     }
 
     public Country getCountryById(int id){
-        return countryIdMap.get(id);
+        return countryRepository.findById(id).get();
     }
 
     public Country getCountryByName(String countryName){
+        List<Country> countries = countryRepository.findAll();
         Country country = null;
-        for (int i:countryIdMap.keySet()) {
-            if (countryIdMap.get(i).getCountryName().equals(countryName)){
-                country = countryIdMap.get(i);
+        for (Country con:countries) {
+            if (con.getCountryName().equalsIgnoreCase(countryName)){
+                country = con;
             }
         }
         return country;
@@ -44,32 +35,24 @@ public class CountryService {
 
     public Country addCountry(Country country){
         country.setId(getMaxId());
-        countryIdMap.put(country.getId(), country);
+        countryRepository.save(country);
         return country;
     }
 
     //Utility method to get max id
-    public static int getMaxId(){
-        int max = 0;
-        for (int id:countryIdMap.keySet()) {
-            if (max <= id){
-                max = id;
-            }
-        }
-        return max + 1;
+    public int getMaxId(){
+        return countryRepository.findAll().size() + 1;
     }
 
     public Country updateCountry(Country country){
-        if (country.getId() > 0){
-            countryIdMap.put(country.getId(), country);
-        }
+        countryRepository.save(country);
         return country;
     }
 
     public AddResponse deleteCountry(int id){
-        countryIdMap.remove(id);
+        countryRepository.deleteById(id);
         AddResponse response = new AddResponse();
-        response.setMsg("Country deleted...");
+        response.setMsg("Country Deleted !");
         response.setId(id);
         return response;
     }
