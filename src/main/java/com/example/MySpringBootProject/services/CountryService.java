@@ -2,11 +2,13 @@ package com.example.MySpringBootProject.services;
 
 import com.example.MySpringBootProject.beans.Country;
 import com.example.MySpringBootProject.controllers.AddResponse;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Component
 public class CountryService {
     static HashMap<Integer, Country> countryIdMap;
 
@@ -21,8 +23,9 @@ public class CountryService {
         countryIdMap.put(3, ukCountry);
     }
 
-    public List<String> getAllCountries(){
-        return (List<String>) new ArrayList(countryIdMap.values());
+    public List getAllCountries(){
+        List countries = new ArrayList(countryIdMap.values());
+        return countries;
     }
 
     public Country getCountryById(int id){
